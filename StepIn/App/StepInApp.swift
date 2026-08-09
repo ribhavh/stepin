@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct StepOffApp: App {
+struct StepInApp: App {
     private let graph: SubwayGraph
 
     init() {

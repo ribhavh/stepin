@@ -1,6 +1,6 @@
 import XCTest
 import CoreLocation
-@testable import StepOff
+@testable import StepIn
 
 // A straight north–south synthetic line of 5 stations 400 m apart, with a
 // destination 100 m north of the last stop. Earlier (southern) stops are

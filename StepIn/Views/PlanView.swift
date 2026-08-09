@@ -9,18 +9,26 @@ struct PlanView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
+                    tagline
                     inputCard
                     resultSection
                 }
                 .padding()
             }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("StepOff")
+            .navigationTitle("Step In")
             .background(Color(.systemGroupedBackground))
         }
     }
 
     // MARK: Inputs
+
+    private var tagline: some View {
+        Text("Get your steps in on the way there.")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
 
     private var inputCard: some View {
         VStack(alignment: .leading, spacing: 16) {

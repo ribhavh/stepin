@@ -5,6 +5,6 @@ DerivedData/
 xcuserdata/
 
 # XcodeGen output (regenerate with `xcodegen generate`)
-StepOff.xcodeproj/
+StepIn.xcodeproj/
 
 .DS_Store

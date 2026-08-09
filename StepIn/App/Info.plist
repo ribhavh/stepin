@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>StepOff</string>
+	<string>Step In</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -36,6 +36,6 @@
 
 	<!-- Location: used only to offer "from my location" and to center the map. -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>StepOff uses your location to plan a trip from where you are and to center the map.</string>
+	<string>Step In uses your location to plan a trip from where you are and to center the map.</string>
 </dict>
 </plist>

@@ -3,7 +3,7 @@
 build_mta_data.py — distill the MTA subway GTFS static feed into a compact bundle.
 
 Downloads the official NYC subway GTFS zip and emits Resources/mta_subway.json
-containing everything StepOff needs to plan a single-line "get off early" trip:
+containing everything Step In needs to plan a single-line "get off early" trip:
 
   - stations:  parent-station id -> {name, lat, lon}
   - routes:    route id -> {short_name, long_name, color}
@@ -36,7 +36,7 @@ GTFS_URL = "http://web.mta.info/developers/data/nyct/subway/google_transit.zip"
 MIN_PATTERN_TRIPS = 5
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT_PATH = os.path.normpath(os.path.join(HERE, "..", "StepOff", "Resources", "mta_subway.json"))
+OUT_PATH = os.path.normpath(os.path.join(HERE, "..", "StepIn", "Resources", "mta_subway.json"))
 
 
 def load_zip(zip_path):
@@ -45,7 +45,7 @@ def load_zip(zip_path):
         with open(zip_path, "rb") as f:
             return zipfile.ZipFile(io.BytesIO(f.read()))
     print(f"Downloading GTFS from {GTFS_URL} ...", file=sys.stderr)
-    req = urllib.request.Request(GTFS_URL, headers={"User-Agent": "StepOff/1.0"})
+    req = urllib.request.Request(GTFS_URL, headers={"User-Agent": "StepIn/1.0"})
     with urllib.request.urlopen(req, timeout=120) as resp:
         data = resp.read()
     print(f"  downloaded {len(data)/1_000_000:.1f} MB", file=sys.stderr)

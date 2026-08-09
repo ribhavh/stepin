@@ -1,4 +1,4 @@
-name: StepOff
+name: StepIn
 options:
   bundleIdPrefix: com.ribhavhora
   createIntermediateGroups: true
@@ -14,40 +14,40 @@ settings:
     # DEVELOPMENT_TEAM: ABCDE12345
 
 targets:
-  StepOff:
+  StepIn:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: StepOff
+      - path: StepIn
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.ribhavhora.stepoff
-        INFOPLIST_FILE: StepOff/App/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.ribhavhora.stepin
+        INFOPLIST_FILE: StepIn/App/Info.plist
         GENERATE_INFOPLIST_FILE: NO
         TARGETED_DEVICE_FAMILY: "1"
         ENABLE_PREVIEWS: YES
         CODE_SIGN_STYLE: Automatic
 
-  StepOffTests:
+  StepInTests:
     type: bundle.unit-test
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: StepOffTests
+      - path: StepInTests
     dependencies:
-      - target: StepOff
+      - target: StepIn
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.ribhavhora.stepoff.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.ribhavhora.stepin.tests
         GENERATE_INFOPLIST_FILE: YES
 
 schemes:
-  StepOff:
+  StepIn:
     build:
       targets:
-        StepOff: all
-        StepOffTests: [test]
+        StepIn: all
+        StepInTests: [test]
     test:
       targets:
-        - StepOffTests
+        - StepInTests

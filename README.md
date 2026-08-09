@@ -1,4 +1,6 @@
-# StepOff
+# Step In
+
+*Get your steps in on the way there.*
 
 Ride most of the way, walk the rest. A native iOS app for NYC that plans a
 subway trip and tells you **which stop to get off at** to hit a walking goal —
@@ -11,10 +13,10 @@ subway trip and tells you **which stop to get off at** to hit a walking goal —
 
 - **Transit brain — bundled MTA subway GTFS.** Apple's MapKit can't do transit
   routing, so the line/stop knowledge comes from the official MTA feed, distilled
-  into `StepOff/Resources/mta_subway.json` (stations + per-line stop sequences,
+  into `StepIn/Resources/mta_subway.json` (stations + per-line stop sequences,
   express vs. local preserved). Free, offline, no API keys.
-- **Walking — MapKit.** Real walking times/distances and the map come from
-  `MKDirections` (`.walking`).
+- **Walking — MapKit.** Real walking times/distances, the map, geocoding, and
+  place autocomplete come from MapKit.
 - **The idea:** find the line you'd actually board (nearest your origin heading
   toward the destination), then walk *backward* along it from the natural nearest
   stop until the remaining walk matches your target.
@@ -23,10 +25,10 @@ subway trip and tells you **which stop to get off at** to hit a walking goal —
 
 ```
 Scripts/build_mta_data.py   # download + distill the MTA GTFS feed
-StepOff/Models/             # WalkTarget, SubwayGraph, Journey
-StepOff/Services/           # Geocode, Walk (MapKit), TransitPlanner, GetOffEarlyPlanner, PlannerModel
-StepOff/Views/              # PlanView, RoutePreviewMap, SubwayLineBadge
-StepOffTests/               # pure-logic unit tests (no simulator/network)
+StepIn/Models/              # WalkTarget, SubwayGraph, Journey
+StepIn/Services/            # Geocode, Walk (MapKit), autocomplete, TransitPlanner, GetOffEarlyPlanner, PlannerModel
+StepIn/Views/               # PlanView, AddressField, RoutePreviewMap, SubwayLineBadge
+StepInTests/                # pure-logic unit tests (no simulator/network)
 ```
 
 ## Build & run
@@ -36,11 +38,11 @@ Requires Xcode and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 ```bash
 python3 Scripts/build_mta_data.py      # refresh bundled subway data (optional)
 xcodegen generate
-xcodebuild -project StepOff.xcodeproj -scheme StepOff \
+xcodebuild -project StepIn.xcodeproj -scheme StepIn \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build
 ```
 
-Open `StepOff.xcodeproj` in Xcode and run, or `xcodebuild ... test` for the unit
+Open `StepIn.xcodeproj` in Xcode and run, or `xcodebuild ... test` for the unit
 tests.
 
 ## Scope
