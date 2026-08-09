@@ -1,0 +1,10 @@
+# Xcode / build
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# XcodeGen output (regenerate with `xcodegen generate`)
+StepOff.xcodeproj/
+
+.DS_Store
