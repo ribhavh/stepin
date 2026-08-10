@@ -51,9 +51,10 @@ final class PlannerModel {
     private let geocoder = GeocodeService()
     private let walk = WalkService()
 
-    /// Distinct lines to evaluate and precise walking measurements per line.
-    /// Bounds the number of (rate-limited) MapKit calls per plan.
-    private let maxLines = 4
+    /// Distinct lines to evaluate. With up to `maxMeasurements` walking
+    /// measurements per line, this bounds the number of (rate-limited) MapKit
+    /// calls per plan (here ≤ 3×4 + 1).
+    private let maxLines = 3
 
     init(graph: SubwayGraph) {
         self.graph = graph
@@ -124,6 +125,10 @@ final class PlannerModel {
             state = .result(trip)
         } catch is CancellationError {
             // superseded by a newer plan; leave state alone
+        } catch let error as MKError where error.code == .loadingThrottled {
+            state = .failed("Maps is rate-limiting directions after several quick tries. Wait a few seconds and tap Plan again.")
+        } catch is WalkError {
+            state = .failed("Found a subway route, but couldn't map the walk to your destination.")
         } catch {
             state = .failed("Couldn't look up one of those addresses. Try a more specific NYC address.")
         }
@@ -190,6 +195,7 @@ final class PlannerModel {
             gotOffEarly: alightIndex < journey.naturalAlightIndex,
             rideStationNames: names,
             rideStationCoords: coords,
+            stops: alightIndex - journey.boardIndex,
             finalWalk: routeResult.measure,
             alightCoord: alightCoord,
             destinationCoord: destination.coordinate,

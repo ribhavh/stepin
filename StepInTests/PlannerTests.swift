@@ -30,6 +30,34 @@ private struct StraightLineEstimator: WalkEstimating {
     }
 }
 
+/// Models Manhattan street walking: distance is ~1.35× the straight line.
+private struct DetourEstimator: WalkEstimating {
+    let factor: Double
+    func measure(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) async throws -> WalkMeasure {
+        let straight = CLLocation(latitude: from.latitude, longitude: from.longitude)
+            .distance(from: CLLocation(latitude: to.latitude, longitude: to.longitude))
+        let street = straight * factor
+        return WalkMeasure(distanceMeters: street, timeSeconds: street / WalkTarget.metersPerSecond)
+    }
+}
+
+/// A 10-station line 300 m apart, destination 50 m past the last stop.
+private func makeLongGraph() -> SubwayGraph {
+    let baseLat = 40.7000
+    let lon = -73.9900
+    let step = 300.0 / 111_000.0
+    var stations: [String: StationInfo] = [:]
+    var ids: [String] = []
+    for i in 0..<10 {
+        let id = "s\(i)"
+        ids.append(id)
+        stations[id] = StationInfo(name: "Stop \(i)", lat: baseLat + Double(i) * step, lon: lon)
+    }
+    let pattern = StopPattern(route: "C", direction: 0, stations: ids, count: 100)
+    let routes = ["C": RouteInfo(short_name: "C", long_name: "Test Local", color: "0039A6")]
+    return SubwayGraph(stations: stations, routes: routes, patterns: [pattern], transfers: [])
+}
+
 final class WalkTargetTests: XCTestCase {
     func testStepsAndMinutesFromMeasure() {
         let walk = WalkMeasure(distanceMeters: 1520, timeSeconds: 600)
@@ -102,5 +130,32 @@ final class GetOffEarlyPlannerTests: XCTestCase {
         )
         let choice = try XCTUnwrap(result)
         XCTAssertEqual(choice.alightIndex, 4)
+    }
+
+    // Regression for the pre-ranking unit fix: with more stops than the
+    // measurement budget, the target (a walked distance) must be compared to
+    // straight-line distances on the same scale, or the true best stop falls
+    // outside the measured set. Street walking here is 1.35× the straight line.
+    func testPreRankAccountsForStreetDetour() async throws {
+        let graph = makeLongGraph()
+        // dest 50 m past s9; s6 is a ~16-min street walk away.
+        let dest = CLLocationCoordinate2D(latitude: 40.7000 + 9.167 * (300.0 / 111_000.0),
+                                          longitude: -73.9900)
+        let journey = JourneyCandidate(pattern: graph.patterns[0],
+                                       boardIndex: 0,
+                                       naturalAlightIndex: 9,
+                                       boardWalkMeters: 0,
+                                       naturalAlightWalkMeters: 50)
+
+        var planner = GetOffEarlyPlanner(graph: graph)
+        planner.maxMeasurements = 2   // fewer than the 9 candidate stops
+        let result = await planner.bestAlight(
+            for: journey,
+            destination: dest,
+            target: .minutes(16),
+            estimator: DetourEstimator(factor: planner.manhattanDetourFactor)
+        )
+        let choice = try XCTUnwrap(result)
+        XCTAssertEqual(choice.alightIndex, 6)
     }
 }

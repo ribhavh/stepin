@@ -26,13 +26,23 @@ final class WalkService: WalkEstimating {
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: to))
         request.transportType = .walking
 
-        let response = try await MKDirections(request: request).calculate()
-        guard let route = response.routes.first else { throw WalkError.noRoute }
-        return RouteResult(
-            measure: WalkMeasure(distanceMeters: route.distance,
-                                 timeSeconds: route.expectedTravelTime),
-            polyline: route.polyline
-        )
+        // MapKit throttles bursts of direction requests; back off and retry a
+        // couple of times before giving up, so a plan recovers on its own.
+        var attempt = 0
+        while true {
+            do {
+                let response = try await MKDirections(request: request).calculate()
+                guard let route = response.routes.first else { throw WalkError.noRoute }
+                return RouteResult(
+                    measure: WalkMeasure(distanceMeters: route.distance,
+                                         timeSeconds: route.expectedTravelTime),
+                    polyline: route.polyline
+                )
+            } catch let error as MKError where error.code == .loadingThrottled && attempt < 2 {
+                attempt += 1
+                try? await Task.sleep(nanoseconds: UInt64(attempt) * 500_000_000)
+            }
+        }
     }
 
     func measure(from: CLLocationCoordinate2D,

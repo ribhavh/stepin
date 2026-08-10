@@ -151,10 +151,15 @@ struct RecommendationCard: View {
             }
 
             HStack(spacing: 24) {
-                stat(value: "\(Int(rec.finalWalk.minutes.rounded()))", unit: "min walk")
+                stat(value: "~\(rec.estimatedTotalMinutes)", unit: "min total")
+                stat(value: "\(rec.walkMinutes)", unit: "min walk")
                 stat(value: rec.finalWalk.steps(stride: WalkTarget.defaultStride).formatted(),
                      unit: "steps")
             }
+
+            Text("~\(rec.estimatedRideMinutes) min ride (\(rec.stops) stops) + \(rec.walkMinutes) min walk. Excludes your walk to the station and train wait.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
 
             Label("Board at \(rec.boardStationName)", systemImage: "tram.fill")
                 .font(.subheadline).foregroundStyle(.secondary)

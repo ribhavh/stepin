@@ -15,7 +15,14 @@ struct GetOffEarlyPlanner {
     /// Cap on precise (rate-limited) walking measurements per journey. We
     /// pre-rank stops by straight-line distance and only measure the most
     /// promising few.
-    var maxMeasurements = 5
+    var maxMeasurements = 3
+
+    /// Manhattan street walking is ~35% longer than the straight-line distance
+    /// (the grid forces detours). We pre-rank stops by straight-line distance,
+    /// so the target (a *walked* distance) is scaled down by this factor to
+    /// compare like with like. Without it the pre-rank is biased toward stops
+    /// that are too far and the real best stop can fall outside the measured set.
+    var manhattanDetourFactor = 1.35
 
     struct AlightChoice {
         let alightIndex: Int
@@ -33,9 +40,9 @@ struct GetOffEarlyPlanner {
         guard natural >= earliest else { return nil }
 
         // Pre-rank candidate alight stops by how close their straight-line
-        // distance to the destination is to the target distance, then spend
-        // precise measurements only on the top few.
-        let targetMeters = target.approximateMeters(stride: stride)
+        // distance to the destination is to the (straight-line-scaled) target,
+        // then spend precise measurements only on the top few.
+        let straightTarget = target.approximateMeters(stride: stride) / manhattanDetourFactor
         let dest = CLLocation(latitude: destination.latitude, longitude: destination.longitude)
 
         let ranked = (earliest...natural).compactMap { idx -> (idx: Int, straight: Double)? in
@@ -43,7 +50,7 @@ struct GetOffEarlyPlanner {
             let d = dest.distance(from: CLLocation(latitude: c.latitude, longitude: c.longitude))
             return (idx, d)
         }
-        .sorted { abs($0.straight - targetMeters) < abs($1.straight - targetMeters) }
+        .sorted { abs($0.straight - straightTarget) < abs($1.straight - straightTarget) }
         .prefix(maxMeasurements)
 
         var best: AlightChoice?

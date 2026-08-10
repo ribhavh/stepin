@@ -38,9 +38,22 @@ struct Recommendation {
 
     let rideStationNames: [String]              // board … alight, inclusive
     let rideStationCoords: [CLLocationCoordinate2D]
+    let stops: Int                              // stops ridden (board → alight)
 
     let finalWalk: WalkMeasure
     let alightCoord: CLLocationCoordinate2D
     let destinationCoord: CLLocationCoordinate2D
     let destinationName: String
+
+    /// Rough time per stop (including dwell). No live schedule in v1, so the
+    /// ride time is an estimate.
+    static let secondsPerStop = 120.0
+
+    var walkMinutes: Int { Int(finalWalk.minutes.rounded()) }
+    var estimatedRideMinutes: Int {
+        max(1, Int((Double(stops) * Recommendation.secondsPerStop / 60).rounded()))
+    }
+    /// Ride + final walk. Excludes the walk to your boarding station and any
+    /// train wait, which are the same whether or not you get off early.
+    var estimatedTotalMinutes: Int { estimatedRideMinutes + walkMinutes }
 }
