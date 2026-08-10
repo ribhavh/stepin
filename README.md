@@ -9,9 +9,17 @@ subway trip and tells you **which stop to get off at** to hit a walking goal —
 > From 315 W 33rd St to 100 5th Ave, 20 minutes → *"Take the C, get off at
 > 23 St (instead of W 4 St), ~24 min total."*
 
-| Say where you're going + your walk goal | Get off early, walk the rest |
+Tell it where you're going and how far you want to walk — in **minutes** or **steps**:
+
+| Walk goal in minutes | Walk goal in steps |
 | :---: | :---: |
-| <img src="docs/screenshot-input.png" width="280" alt="Step In input screen: from/to fields and a minutes/steps walk goal"> | <img src="docs/screenshot-result.png" width="280" alt="Step In result: take the C, get off at 23 St, with total time and a map of the walk"> |
+| <img src="docs/screenshot-input.png" width="270" alt="Step In input in Minutes mode: 20 minutes"> | <img src="docs/screenshot-steps-input.png" width="270" alt="Step In input in Steps mode: 4,000 steps"> |
+
+…and it picks the stop to get off at, showing the ride, the walk, your steps, and the total trip time:
+
+<p align="center">
+  <img src="docs/screenshot-result.png" width="300" alt="Step In result: take the C, get off at 23 St instead of W 4 St, ~24 min total, with a map of the walk">
+</p>
 
 ## Why this exists
 
