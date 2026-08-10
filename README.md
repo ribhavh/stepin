@@ -6,8 +6,20 @@ Ride most of the way, walk the rest. A native iOS app for NYC that plans a
 subway trip and tells you **which stop to get off at** to hit a walking goal —
 "I want to walk 20 minutes" or "I want 4,000 steps."
 
-> From 315 W 33rd St to 100 5th Ave, 20 minutes → *"Take the C/E, get off at
-> 23 St (instead of 14 St), ~18 min walk."*
+> From 315 W 33rd St to 100 5th Ave, 20 minutes → *"Take the C, get off at
+> 23 St (instead of W 4 St), ~24 min total."*
+
+| Say where you're going + your walk goal | Get off early, walk the rest |
+| :---: | :---: |
+| <img src="docs/screenshot-input.png" width="280" alt="Step In input screen: from/to fields and a minutes/steps walk goal"> | <img src="docs/screenshot-result.png" width="280" alt="Step In result: take the C, get off at 23 St, with total time and a map of the walk"> |
+
+## Why this exists
+
+Google Maps and Apple Maps route you to the *closest* stop and the *shortest*
+walk. But sometimes you *want* to walk — to hit a step goal, clear your head, or
+just move. Step In flips it around: tell it how far you want to walk, and it
+finds the stop to get off at so the last leg is exactly that. You still get where
+you're going; you just arrive with your steps in.
 
 ## How it works
 

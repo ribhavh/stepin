@@ -7,17 +7,23 @@ struct PlanView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    tagline
-                    inputCard
-                    resultSection
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: 20) {
+                        tagline
+                        inputCard
+                        resultSection
+                            .id("result")
+                    }
+                    .padding()
                 }
-                .padding()
+                .scrollDismissesKeyboard(.interactively)
+                .navigationTitle("Step In")
+                .background(Color(.systemGroupedBackground))
+                .onChange(of: model.resultCount) { _, _ in
+                    withAnimation(.snappy) { proxy.scrollTo("result", anchor: .top) }
+                }
             }
-            .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("Step In")
-            .background(Color(.systemGroupedBackground))
         }
     }
 
@@ -157,7 +163,7 @@ struct RecommendationCard: View {
                      unit: "steps")
             }
 
-            Text("~\(rec.estimatedRideMinutes) min ride (\(rec.stops) stops) + \(rec.walkMinutes) min walk. Excludes your walk to the station and train wait.")
+            Text("~\(rec.estimatedRideMinutes) min ride (\(rec.stops) stop\(rec.stops == 1 ? "" : "s")) + \(rec.walkMinutes) min walk. Excludes your walk to the station and train wait.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 

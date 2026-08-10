@@ -35,6 +35,9 @@ final class PlannerModel {
 
     private(set) var state: State = .idle
 
+    /// Bumped each time a fresh result lands, so the view can scroll to it.
+    private(set) var resultCount = 0
+
     // Coordinates resolved from a picked autocomplete suggestion. Used only
     // while the field text still matches what was picked; a manual edit clears
     // them and we fall back to geocoding the text.
@@ -122,6 +125,7 @@ final class PlannerModel {
             let trip = try await buildTrip(journey: best.journey,
                                            choice: best.choice,
                                            destination: dest)
+            resultCount += 1
             state = .result(trip)
         } catch is CancellationError {
             // superseded by a newer plan; leave state alone
