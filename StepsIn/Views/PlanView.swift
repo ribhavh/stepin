@@ -18,7 +18,7 @@ struct PlanView: View {
                     .padding()
                 }
                 .scrollDismissesKeyboard(.interactively)
-                .navigationTitle("Step In")
+                .navigationTitle("StepsIn")
                 .background(Color(.systemGroupedBackground))
                 .onChange(of: model.resultCount) { _, _ in
                     withAnimation(.snappy) { proxy.scrollTo("result", anchor: .top) }
